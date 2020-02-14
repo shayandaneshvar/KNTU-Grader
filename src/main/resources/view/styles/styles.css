@@ -15,3 +15,6 @@
 #root{
     -fx-background-color: #443737;
 }
+#checkbox{
+    -fx-text-fill: #ff4d00;
+}

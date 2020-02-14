@@ -1,6 +1,7 @@
 package ir.ac.kntu.presenter;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,6 +25,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MainController implements Initializable {
     @FXML
     private AnchorPane root;
+
+    @FXML
+    private JFXCheckBox injectionOnlyButton;
 
     @FXML
     private JFXTextField assignmentsName;
@@ -88,11 +92,12 @@ public class MainController implements Initializable {
         try {
             cleanTests();
             copyTests();
+            if(injectionOnlyButton.selectedProperty().get()){
+                // TODO: 2/15/2020
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // FIXME: 2/14/2020 
-
     }
 
     private void copyTests() throws IOException {

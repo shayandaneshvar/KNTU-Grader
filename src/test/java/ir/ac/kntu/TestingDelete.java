@@ -25,22 +25,21 @@ public class TestingDelete {
 
     @Test
     public void testFindDirectories() throws IOException, URISyntaxException {
-        File file = new File("C:\\Users\\moein\\IdeaProjects\\KNTU Grader\\src\\test\\java\\ir\\ac\\kntu\\add");
+        File file = new File("src\\test\\java\\ir\\ac\\kntu\\add");
         List<File> directories = Arrays.asList(file.listFiles(File::isDirectory));
         for (File f : directories) {
-            delete(Paths.get(f.getAbsolutePath() + "/testing"));
+            delete(Paths.get(f.getAbsolutePath() /*+ "/testing"*/));
         }
-
     }
 
 
     @Test
     public void testCopyDirectories() throws IOException, URISyntaxException {
-        File file = new File("C:\\Users\\moein\\IdeaProjects\\KNTU Grader\\src\\test\\java\\ir\\ac\\kntu\\add");
+        File file = new File("src\\test\\java\\ir\\ac\\kntu\\add");
         List<File> directories = Arrays.asList(file.listFiles(File::isDirectory));
         for (File f : directories) {
             copyDirectory(Paths.get(f.getAbsolutePath()),
-                    Paths.get("C:\\Users\\moein\\IdeaProjects\\KNTU Grader\\src\\test\\java\\ir\\ac\\kntu\\desti/testy"));
+                    Paths.get("src\\test\\java\\ir\\ac\\kntu\\desti/testy"));
         }
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.DropShadow?>
@@ -9,7 +10,7 @@
 
 <AnchorPane id="root" fx:id="root" prefHeight="375.0" prefWidth="500.0" style="-fx-background-color: #443737;" stylesheets="@styles/styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.ac.kntu.presenter.MainController">
    <children>
-      <JFXTextField fx:id="assignmentsName" focusColor="RED" layoutX="40.0" layoutY="58.0" prefHeight="32.0" prefWidth="236.0" promptText="Assignment's name" styleClass="text-field" unFocusColor="#ff4d00">
+      <JFXTextField fx:id="assignmentsName" focusColor="RED" layoutX="40.0" layoutY="58.0" prefHeight="32.0" prefWidth="171.0" promptText="Assignment's name" styleClass="text-field" unFocusColor="#ff4d00">
          <font>
             <Font name="Arial" size="16.0" />
          </font>
@@ -24,7 +25,7 @@
             </Tooltip>
          </tooltip>
       </JFXTextField>
-      <JFXTextField fx:id="assignmentsMark" focusColor="RED" layoutX="306.0" layoutY="58.0" prefHeight="32.0" prefWidth="165.0" promptText="Assignment's mark" styleClass="text-field" unFocusColor="#ff4d00">
+      <JFXTextField fx:id="assignmentsMark" focusColor="RED" layoutX="225.0" layoutY="58.0" prefHeight="32.0" prefWidth="141.0" promptText="Assignment's mark" styleClass="text-field" unFocusColor="#ff4d00">
          <font>
             <Font name="Arial" size="16.0" />
          </font>
@@ -39,6 +40,11 @@
             </Tooltip>
          </tooltip>
       </JFXTextField>
+      <JFXCheckBox id="checkbox" fx:id="injectionOnlyButton" checkedColor="RED" layoutX="381.0" layoutY="65.0" stylesheets="@styles/styles.css" text="Inject Only!" textAlignment="CENTER" unCheckedColor="#272121">
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </JFXCheckBox>
       <JFXTextField fx:id="assignmentsField" focusColor="RED" layoutX="40.0" layoutY="124.0" prefHeight="28.0" prefWidth="326.0" promptText="Assignments folder" styleClass="text-field" unFocusColor="#ff4d00">
          <font>
             <Font name="Arial" size="16.0" />
