@@ -26,6 +26,12 @@ public class MainController implements Initializable {
     private AnchorPane root;
 
     @FXML
+    private JFXTextField assignmentsName;
+
+    @FXML
+    private JFXTextField assignmentsMark;
+
+    @FXML
     private JFXTextField assignmentsField;
 
     @FXML
@@ -85,7 +91,7 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        // FIXME: 2/14/2020 
 
     }
 
@@ -133,6 +139,6 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        
     }
 }

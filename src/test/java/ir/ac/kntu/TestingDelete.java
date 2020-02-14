@@ -51,7 +51,7 @@ public class TestingDelete {
                 .forEach(File::delete);
     }
 
-    private void copyDirectory(Path srcPath,Path destination) throws IOException {
-        FileUtils.copyDirectory(srcPath.toFile(),destination.toFile());
+    private void copyDirectory(Path srcPath, Path destination) throws IOException {
+        FileUtils.copyDirectory(srcPath.toFile(), destination.toFile());
     }
 }

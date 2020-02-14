@@ -1,0 +1,4 @@
+--patch-module
+KNTU.Grader=_
+--add-reads
+KNTU.Grader=ALL-UNNAMED
