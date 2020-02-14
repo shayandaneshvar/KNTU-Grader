@@ -8,5 +8,7 @@ open module KNTU.Grader {
     requires javafx.media;
     requires com.jfoenix;
     requires org.apache.commons.io;
-
+    requires maven.invoker;
+    requires opencsv;
+//    requires lombok;
 }

@@ -1,7 +1,10 @@
 package ir.ac.kntu.presenter;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
+import ir.ac.kntu.model.TestResult;
+import ir.ac.kntu.services.MavenTestInvokerProvider;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -15,15 +18,31 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.apache.commons.io.FilenameUtils.getName;
+
 public class MainController implements Initializable {
+    private ExecutorService executor;
+
     @FXML
     private AnchorPane root;
+
+    @FXML
+    private JFXCheckBox injectionOnlyButton;
+
+    @FXML
+    private JFXTextField assignmentsName;
+
+    @FXML
+    private JFXTextField assignmentsMark;
 
     @FXML
     private JFXTextField assignmentsField;
@@ -48,6 +67,7 @@ public class MainController implements Initializable {
 
     @FXML
     void browseAssignments(MouseEvent event) {
+        event.consume();
         handleBrowse(assignmentsField, root);
     }
 
@@ -59,16 +79,19 @@ public class MainController implements Initializable {
 
     @FXML
     void browseResult(MouseEvent event) {
+        event.consume();
         handleBrowse(resultsField, root);
     }
 
     @FXML
     void browseTests(MouseEvent event) {
+        event.consume();
         handleBrowse(testsField, root);
     }
 
     @FXML
     void startGrading(MouseEvent event) {
+        event.consume();
         if (!isEligible()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -82,19 +105,34 @@ public class MainController implements Initializable {
         try {
             cleanTests();
             copyTests();
-        } catch (IOException e) {
+            if (!injectionOnlyButton.selectedProperty().get()) {
+                return;
+            }
+            List<Callable<TestResult>> results = new ArrayList<>();
+            for (File file : listFiles(assignmentsField.getText())) {
+                var result = MavenTestInvokerProvider.prepareInstance(
+                        file.getAbsolutePath(),
+                        getName(file.getAbsolutePath()))
+                        .provide("clean", "test");
+                results.add(result);
+//                    executor.submit(result);
+            }
+            List<Future<TestResult>> finalResults = executor.invokeAll(results);
+            // TODO: 2/15/2020
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
 
     private void copyTests() throws IOException {
-        File file = new File(assignmentsField.getText());
-        List<File> directories = Arrays.asList(file.listFiles(File::isDirectory));
-        for (File f : directories) {
+        for (File f : listFiles(assignmentsField.getText())) {
             copyDirectory(Paths.get(testsField.getText()), Paths.get(f.getAbsolutePath() + "/src/test"));
         }
+    }
+
+    private File[] listFiles(String address) {
+        File file = new File(address);
+        return file.listFiles(File::isDirectory);
     }
 
     private void copyDirectory(Path srcPath, Path destinationPath) throws IOException {
@@ -102,12 +140,9 @@ public class MainController implements Initializable {
     }
 
     private void cleanTests() throws IOException {
-        File file = new File(assignmentsField.getText());
-        List<File> directories = Arrays.asList(file.listFiles(File::isDirectory));
-        for (File f : directories) {
+        for (File f : listFiles(assignmentsField.getText())) {
             deleteDirectory(Paths.get(f.getAbsolutePath() + "/src/test"));
         }
-
     }
 
     private static void deleteDirectory(Path path) throws IOException {
@@ -133,6 +168,6 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        executor = Executors.newCachedThreadPool();
     }
 }

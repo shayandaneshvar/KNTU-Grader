@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: ir.ac.kntu.TestingMavenInvoker
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 3.112 sec <<< FAILURE!
+ir.ac.kntu.TestingMavenInvoker.testingInvoker()  Time elapsed: 3.112 sec  <<< FAILURE!
+java.lang.Error
+	at ir.ac.kntu.TestingMavenInvoker.testingInvoker(TestingMavenInvoker.java:25)
+
