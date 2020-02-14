@@ -3,7 +3,8 @@ package ir.ac.kntu.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TestResult {
+public final class TestResult {
+    private String id;
     private final String fullResult;
     private Integer testsPassed;
     private Integer testsFailed;
@@ -16,7 +17,7 @@ public class TestResult {
                 "\\d+, Skipped: \\d+");
     }
 
-    public TestResult(String fullResult) {
+    public TestResult(String id, String fullResult) {
         this.fullResult = fullResult;
     }
 
@@ -54,7 +55,7 @@ public class TestResult {
         return this.testsRun;
     }
 
-    public boolean isExtracted() {
-        return this.extracted;
+    public String getId() {
+        return id;
     }
 }
