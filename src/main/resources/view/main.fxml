@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="root" fx:id="root" prefHeight="375.0" prefWidth="500.0" style="-fx-background-color: #443737;" stylesheets="@styles/styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ir.ac.kntu.presenter.MainController">
+   <children>
+      <JFXTextField fx:id="assignmentsField" focusColor="RED" layoutX="40.0" layoutY="76.0" prefHeight="28.0" prefWidth="326.0" promptText="Assignments folder" styleClass="text-field" unFocusColor="#ff4d00">
+         <font>
+            <Font name="Arial" size="16.0" />
+         </font>
+         <effect>
+            <DropShadow />
+         </effect>
+      </JFXTextField>
+      <JFXTextField fx:id="testsField" focusColor="RED" layoutX="40.0" layoutY="156.0" prefHeight="28.0" prefWidth="326.0" promptText="Tests folder" styleClass="text-field" unFocusColor="#ff4d00">
+         <font>
+            <Font name="Arial" size="16.0" />
+         </font>
+         <effect>
+            <DropShadow />
+         </effect>
+      </JFXTextField>
+      <JFXTextField fx:id="resultsField" focusColor="RED" layoutX="40.0" layoutY="233.0" prefHeight="28.0" prefWidth="326.0" promptText="Result folder" styleClass="text-field" unFocusColor="#ff4d00">
+         <font>
+            <Font name="Arial" size="16.0" />
+         </font>
+         <effect>
+            <DropShadow />
+         </effect>
+      </JFXTextField>
+      <JFXButton fx:id="assignmentsBrowseButton" buttonType="RAISED" layoutX="388.0" layoutY="76.0" onMouseClicked="#browseAssignments" prefHeight="32.0" prefWidth="82.0" styleClass="browse-btn" text="Browse">
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="testsBrowseButton" buttonType="RAISED" layoutX="388.0" layoutY="156.0" onMouseClicked="#browseTests" prefHeight="32.0" prefWidth="82.0" styleClass="browse-btn" text="Browse">
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="resultBrowseButton" buttonType="RAISED" layoutX="388.0" layoutY="233.0" onMouseClicked="#browseResult" prefHeight="32.0" prefWidth="82.0" styleClass="browse-btn" text="Browse">
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton id="submit-btn" fx:id="startButton" buttonType="RAISED" layoutX="194.0" layoutY="308.0" onMouseClicked="#startGrading" prefHeight="32.0" prefWidth="112.0" text="Start">
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>

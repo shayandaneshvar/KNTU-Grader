@@ -1,0 +1,17 @@
+.text-field {
+    -fx-background-color: #272121;
+    -fx-text-fill: #ff4d00;
+}
+
+.browse-btn {
+    -fx-background-color: #272121;
+    -fx-text-fill: #ff4d00 ;
+}
+
+#submit-btn {
+    -fx-background-color: #272121;
+    -fx-text-fill: red ;
+}
+#root{
+    -fx-background-color: #443737;
+}
