@@ -97,7 +97,7 @@ public class MainController implements Initializable {
 
     private void copyTests() throws IOException {
         File file = new File(assignmentsField.getText());
-        List<File> directories = Arrays.asList(file.listFiles(File::isDirectory));
+        File[] directories = file.listFiles(File::isDirectory);
         for (File f : directories) {
             copyDirectory(Paths.get(testsField.getText()), Paths.get(f.getAbsolutePath() + "/src/test"));
         }
