@@ -18,6 +18,7 @@ public final class TestResult {
     }
 
     public TestResult(String id, String fullResult) {
+        this.id = id;
         this.fullResult = fullResult;
     }
 
