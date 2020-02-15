@@ -3,8 +3,13 @@ package ir.ac.kntu.presenter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import ir.ac.kntu.model.TestResult;
+import ir.ac.kntu.model.TestResultDTO;
 import ir.ac.kntu.services.MavenTestInvokerProvider;
+import ir.ac.kntu.services.TestResult2TestResultDTO;
+import ir.ac.kntu.util.CSVWriteUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -23,6 +28,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.io.FilenameUtils.getName;
 
@@ -111,7 +117,7 @@ public class MainController implements Initializable {
             int score;
             if (assignmentsMark.getText().isEmpty()) {
                 score = 100;
-            }else {
+            } else {
                 try {
                     score = Integer.parseInt(assignmentsMark.getText());
                 } catch (Exception e) {
@@ -128,7 +134,7 @@ public class MainController implements Initializable {
             }
             System.err.println("Invoking Futures");
             List<Future<TestResult>> finalResults = executor.invokeAll(results);
-            finalResults.stream().map(x -> {
+            List<TestResultDTO> dtos = finalResults.stream().map(x -> {
                 if (x.isDone()) {
                     try {
                         return x.get();
@@ -137,10 +143,22 @@ public class MainController implements Initializable {
                     }
                 }
                 return null;
-            }).forEach(System.out::println);
-        } catch (IOException | InterruptedException e) {
+            }).map(z -> TestResult2TestResultDTO.getInstance().convert(z))
+                    .collect(Collectors.toList());
+            CSVWriteUtil.writeAll(getResultAddress(), dtos);
+        } catch (InterruptedException | CsvRequiredFieldEmptyException |
+                IOException | CsvDataTypeMismatchException e) {
             e.printStackTrace();
         }
+    }
+
+    private Path getResultAddress() {
+        String fileName = resultsField.getText().trim().isEmpty() ? "result.csv"
+                : resultsField.getText().trim();
+        if (resultsField.getText().isEmpty()) {
+            return Paths.get(assignmentsField.getText() + fileName);
+        }
+        return Paths.get(resultsField.getText() + fileName);
     }
 
     private void copyTests() throws IOException {
@@ -177,7 +195,7 @@ public class MainController implements Initializable {
     private boolean isEligible() {
         List<File> list = new ArrayList<>();
         list.add(new File(assignmentsField.getText()));
-        list.add(new File(resultsField.getText()));
+//        list.add(new File(resultsField.getText()));
         list.add(new File(testsField.getText()));
         AtomicBoolean eligibility = new AtomicBoolean(true);
         list.forEach(x -> {
