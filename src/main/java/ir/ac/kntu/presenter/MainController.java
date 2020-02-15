@@ -21,10 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.apache.commons.io.FilenameUtils.getName;
@@ -105,20 +102,42 @@ public class MainController implements Initializable {
         try {
             cleanTests();
             copyTests();
-            if (!injectionOnlyButton.selectedProperty().get()) {
+            if (injectionOnlyButton.selectedProperty().get()) {
+                System.err.println("Returning");
                 return;
             }
+            System.err.println("Implementing Callable");
             List<Callable<TestResult>> results = new ArrayList<>();
+            int score;
+            if (assignmentsMark.getText().isEmpty()) {
+                score = 100;
+            }else {
+                try {
+                    score = Integer.parseInt(assignmentsMark.getText());
+                } catch (Exception e) {
+                    score = 100;
+                }
+            }
+
             for (File file : listFiles(assignmentsField.getText())) {
                 var result = MavenTestInvokerProvider.prepareInstance(
-                        file.getAbsolutePath(),
-                        getName(file.getAbsolutePath()))
+                        file.getAbsolutePath(), getName(file.getAbsolutePath()),
+                        score)
                         .provide("clean", "test");
                 results.add(result);
-//                    executor.submit(result);
             }
+            System.err.println("Invoking Futures");
             List<Future<TestResult>> finalResults = executor.invokeAll(results);
-            // TODO: 2/15/2020
+            finalResults.stream().map(x -> {
+                if (x.isDone()) {
+                    try {
+                        return x.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }).forEach(System.out::println);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -141,7 +160,10 @@ public class MainController implements Initializable {
 
     private void cleanTests() throws IOException {
         for (File f : listFiles(assignmentsField.getText())) {
-            deleteDirectory(Paths.get(f.getAbsolutePath() + "/src/test"));
+            Path path = Paths.get(f.getAbsolutePath() + "/src/test");
+            if (path.toFile().exists()) {
+                deleteDirectory(path);
+            }
         }
     }
 

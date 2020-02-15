@@ -11,17 +11,23 @@ public final class TestResult {
     private Integer testsRun;
     private boolean extracted;
     private static final Pattern pattern;
+    private float mark;
+    private final Integer maxScore;
 
     static {
         pattern = Pattern.compile("Tests run: \\d+, Failures: \\d+, Errors: " +
                 "\\d+, Skipped: \\d+");
     }
 
-    public TestResult(String id, String fullResult) {
+    public TestResult(String id, String fullResult,int maxScore) {
         this.id = id;
         this.fullResult = fullResult;
+        this.maxScore = maxScore;
     }
 
+    public float getMark() {
+        return mark;
+    }
 
     public void extractInfo() {
         if (!extracted) {
@@ -31,12 +37,21 @@ public final class TestResult {
             if (matcher.find()) {
                 result = matcher.group(0);
             }
-            String[] parts = result.split(",");
-            String firstPart = parts[0].substring(parts[0].indexOf("Tests run: ") + 11);
-            String secondPart = parts[1].substring(parts[0].indexOf("Failures: ") + 12);
-            testsRun = Integer.parseInt(firstPart);
-            testsFailed = Integer.parseInt(secondPart);
-            testsPassed = testsRun - testsFailed;
+            try {
+                String[] parts = result.split(",");
+                String firstPart = parts[0].substring(parts[0].indexOf("Tests run: ") + 11);
+                String secondPart = parts[1].substring(parts[0].indexOf("Failures: ") + 12);
+                testsRun = Integer.parseInt(firstPart);
+                testsFailed = Integer.parseInt(secondPart);
+                testsPassed = testsRun - testsFailed;
+                mark = (testsPassed / (float)testsRun) * maxScore;
+            } catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException ex) {
+                System.out.println(ex.getMessage());
+                testsRun = 0;
+                testsFailed = 0;
+                mark = 0;
+                testsPassed = 0;
+            }
         }
     }
 
@@ -58,5 +73,9 @@ public final class TestResult {
 
     public String getId() {
         return id;
+    }
+
+    public String toString() {
+        return "TestResult(id=" + this.getId() + ", fullResult=" + this.getFullResult() + ", testsPassed=" + this.getTestsPassed() + ", testsFailed=" + this.getTestsFailed() + ", testsRun=" + this.getTestsRun() + ", extracted=" + this.extracted + ")";
     }
 }
