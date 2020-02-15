@@ -10,5 +10,6 @@ open module KNTU.Grader {
     requires org.apache.commons.io;
     requires maven.invoker;
     requires opencsv;
+    requires java.sql;
 //    requires lombok;
 }

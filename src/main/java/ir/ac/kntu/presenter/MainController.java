@@ -153,8 +153,8 @@ public class MainController implements Initializable {
     }
 
     private Path getResultAddress() {
-        String fileName = resultsField.getText().trim().isEmpty() ? "result.csv"
-                : resultsField.getText().trim();
+        String fileName = assignmentsName.getText().trim().isEmpty() ? "/result.csv"
+                : "/" + assignmentsName.getText() + ".csv";
         if (resultsField.getText().isEmpty()) {
             return Paths.get(assignmentsField.getText() + fileName);
         }

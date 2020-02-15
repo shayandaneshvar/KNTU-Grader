@@ -14,13 +14,14 @@ import java.nio.file.Path;
 import java.util.List;
 
 public final class CSVWriteUtil {
-    private CSVWriteUtil(){
+    private CSVWriteUtil() {
     }
 
-    public static void writeAll(Path path, List<?> list) throws IOException,
+    public static <T> void writeAll(Path path, List<T> list) throws IOException,
             CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
-        Writer writer = new FileWriter(path.toString());
-        StatefulBeanToCsv sbc = new StatefulBeanToCsvBuilder(writer)
+        System.err.println(path.toFile().toString() + "\n\n\n\n\n");
+        Writer writer = new FileWriter(path.toFile().toString());
+        StatefulBeanToCsv<T> sbc = new StatefulBeanToCsvBuilder(writer)
                 .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
                 .build();
         sbc.write(list);
