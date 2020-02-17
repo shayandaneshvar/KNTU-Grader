@@ -44,10 +44,12 @@ public class TestingDelete {
     }
 
     private void delete(Path path) throws IOException {
-        Files.walk(path)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        if (path.toFile().exists()) {
+            Files.walk(path)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        }
     }
 
     private void copyDirectory(Path srcPath, Path destination) throws IOException {
