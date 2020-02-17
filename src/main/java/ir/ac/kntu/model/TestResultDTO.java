@@ -2,7 +2,7 @@ package ir.ac.kntu.model;
 
 import com.opencsv.bean.CsvBindByName;
 
-public class TestResultDTO {
+public final class TestResultDTO {
     @CsvBindByName(column = "full name")
     private String id;
 
