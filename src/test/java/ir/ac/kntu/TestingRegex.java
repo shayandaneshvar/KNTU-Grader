@@ -35,6 +35,18 @@ public class TestingRegex {
         Assertions.assertEquals(failures,50);
         Assertions.assertEquals(errors,10);
         Assertions.assertEquals(skipped,210);
-
+    }
+    @Test
+    public void testingMultiple(){
+        String text = "fja;kjfjlk;adjdl Tests run: 12, Failures: 50, Errors: 10, Skipped: 210 fklasf;lkjfaj " +
+                "Tests run: 206, Failures: 0, Errors: 0, Skipped: 0";
+        Pattern pattern = Pattern.compile("Tests run: \\d+, Failures: \\d+, Errors: " +
+                "\\d+, Skipped: \\d+");
+        Matcher matcher = pattern.matcher(text);
+        System.out.println(matcher.find());
+        System.out.println(matcher.group(0));
+        System.out.println(matcher.find());
+        System.out.println(matcher.group(0));
+        System.out.println(matcher.find());
     }
 }

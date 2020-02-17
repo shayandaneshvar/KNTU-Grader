@@ -3,8 +3,13 @@ package ir.ac.kntu.presenter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import ir.ac.kntu.model.TestResult;
+import ir.ac.kntu.model.TestResultDTO;
 import ir.ac.kntu.services.MavenTestInvokerProvider;
+import ir.ac.kntu.services.TestResult2TestResultDTO;
+import ir.ac.kntu.util.CSVWriteUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -21,11 +26,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.io.FilenameUtils.getName;
 
@@ -105,23 +108,57 @@ public class MainController implements Initializable {
         try {
             cleanTests();
             copyTests();
-            if (!injectionOnlyButton.selectedProperty().get()) {
+            if (injectionOnlyButton.selectedProperty().get()) {
+                System.err.println("Returning");
                 return;
             }
+            System.err.println("Implementing Callable");
             List<Callable<TestResult>> results = new ArrayList<>();
+            int score;
+            if (assignmentsMark.getText().isEmpty()) {
+                score = 100;
+            } else {
+                try {
+                    score = Integer.parseInt(assignmentsMark.getText());
+                } catch (Exception e) {
+                    score = 100;
+                }
+            }
+
             for (File file : listFiles(assignmentsField.getText())) {
                 var result = MavenTestInvokerProvider.prepareInstance(
-                        file.getAbsolutePath(),
-                        getName(file.getAbsolutePath()))
+                        file.getAbsolutePath(), getName(file.getAbsolutePath()),
+                        score)
                         .provide("clean", "test");
                 results.add(result);
-//                    executor.submit(result);
             }
+            System.err.println("Invoking Futures");
             List<Future<TestResult>> finalResults = executor.invokeAll(results);
-            // TODO: 2/15/2020
-        } catch (IOException | InterruptedException e) {
+            List<TestResultDTO> dtos = finalResults.stream().map(x -> {
+                if (x.isDone()) {
+                    try {
+                        return x.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }).map(z -> TestResult2TestResultDTO.getInstance().convert(z))
+                    .collect(Collectors.toList());
+            CSVWriteUtil.writeAll(getResultAddress(), dtos);
+        } catch (InterruptedException | CsvRequiredFieldEmptyException |
+                IOException | CsvDataTypeMismatchException e) {
             e.printStackTrace();
         }
+    }
+
+    private Path getResultAddress() {
+        String fileName = assignmentsName.getText().trim().isEmpty() ? "/result.csv"
+                : "/" + assignmentsName.getText() + ".csv";
+        if (resultsField.getText().isEmpty()) {
+            return Paths.get(assignmentsField.getText() + fileName);
+        }
+        return Paths.get(resultsField.getText() + fileName);
     }
 
     private void copyTests() throws IOException {
@@ -141,7 +178,10 @@ public class MainController implements Initializable {
 
     private void cleanTests() throws IOException {
         for (File f : listFiles(assignmentsField.getText())) {
-            deleteDirectory(Paths.get(f.getAbsolutePath() + "/src/test"));
+            Path path = Paths.get(f.getAbsolutePath() + "/src/test");
+            if (path.toFile().exists()) {
+                deleteDirectory(path);
+            }
         }
     }
 
@@ -155,7 +195,7 @@ public class MainController implements Initializable {
     private boolean isEligible() {
         List<File> list = new ArrayList<>();
         list.add(new File(assignmentsField.getText()));
-        list.add(new File(resultsField.getText()));
+//        list.add(new File(resultsField.getText()));
         list.add(new File(testsField.getText()));
         AtomicBoolean eligibility = new AtomicBoolean(true);
         list.forEach(x -> {
