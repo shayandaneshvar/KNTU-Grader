@@ -5,16 +5,36 @@
 
 .browse-btn {
     -fx-background-color: #272121;
-    -fx-text-fill: #ff4d00 ;
+    -fx-text-fill: #ff4d00;
 }
 
 #submit-btn {
     -fx-background-color: #272121;
-    -fx-text-fill: red ;
+    -fx-text-fill: red;
 }
-#root{
+
+#root {
     -fx-background-color: #443737;
 }
-#checkbox{
+
+#checkbox {
     -fx-text-fill: #ff4d00;
+}
+
+.jfx-progress-bar > .track, .jfx-progress-bar > .bar {
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+
+.jfx-progress-bar > .bar {
+    -fx-background-color: red;
+}
+
+.jfx-progress-bar > .track {
+    -fx-background-color: #443737 /*#E0E0E0*/;
+}
+
+.jfx-progress-bar {
+    -fx-border-width: 3px;
+    -fx-border-color: red;
 }

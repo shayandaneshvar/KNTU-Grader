@@ -1,5 +1,6 @@
 package ir.ac.kntu;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -7,7 +8,9 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
+    @Disabled
 public class TestingExecutorInvocation {
+
     @Test
     public void testingExecutor() throws InterruptedException {
         ExecutorService service = Executors.newCachedThreadPool();

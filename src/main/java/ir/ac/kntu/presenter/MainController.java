@@ -2,6 +2,7 @@ package ir.ac.kntu.presenter;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTextField;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
@@ -10,15 +11,20 @@ import ir.ac.kntu.model.TestResultDTO;
 import ir.ac.kntu.services.MavenTestInvokerProvider;
 import ir.ac.kntu.services.TestResult2TestResultDTO;
 import ir.ac.kntu.util.CSVWriteUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -94,7 +100,6 @@ public class MainController implements Initializable {
 
     @FXML
     void startGrading(MouseEvent event) {
-        event.consume();
         if (!isEligible()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -104,16 +109,39 @@ public class MainController implements Initializable {
             alert.show();
             return;
         }
+        JFXProgressBar progressBar = new JFXProgressBar(0.01);
+        progressBar.getStylesheets().add("view/styles/styles.css");
+        progressBar.setPrefWidth(240);
+        progressBar.setPrefHeight(40);
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+        stage.initOwner(root.getScene().getWindow());
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initModality(Modality.WINDOW_MODAL);
+        Scene scene = new Scene(progressBar);
+        scene.setFill(null);
+        stage.setScene(scene);
+        stage.show();
+        Thread runner = new Thread(() -> handleGrading(progressBar, stage));
+        runner.start();
+        event.consume();
+    }
 
+    private void handleGrading(JFXProgressBar progressBar, Stage stage) {
         try {
+            progressBar.setProgress(0.1);
             cleanTests();
+            progressBar.setProgress(0.2);
             copyTests();
+            progressBar.setProgress(0.3);
             if (injectionOnlyButton.selectedProperty().get()) {
                 System.err.println("Returning");
+                progressBar.setProgress(0.98);
+                Platform.runLater(stage::close);
                 return;
             }
             System.err.println("Implementing Callable");
             List<Callable<TestResult>> results = new ArrayList<>();
+            progressBar.setProgress(0.35);
             int score;
             if (assignmentsMark.getText().isEmpty()) {
                 score = 100;
@@ -124,7 +152,7 @@ public class MainController implements Initializable {
                     score = 100;
                 }
             }
-
+            progressBar.setProgress(0.38);
             for (File file : listFiles(assignmentsField.getText())) {
                 var result = MavenTestInvokerProvider.prepareInstance(
                         file.getAbsolutePath(), getName(file.getAbsolutePath()),
@@ -132,6 +160,7 @@ public class MainController implements Initializable {
                         .provide("clean", "test");
                 results.add(result);
             }
+            progressBar.setProgress(0.45);
             System.err.println("Invoking Futures");
             List<Future<TestResult>> finalResults = executor.invokeAll(results);
             List<TestResultDTO> dtos = finalResults.stream().map(x -> {
@@ -145,11 +174,14 @@ public class MainController implements Initializable {
                 return null;
             }).map(z -> TestResult2TestResultDTO.getInstance().convert(z))
                     .collect(Collectors.toList());
+            progressBar.setProgress(0.9);
             CSVWriteUtil.writeAll(getResultAddress(), dtos);
         } catch (InterruptedException | CsvRequiredFieldEmptyException |
                 IOException | CsvDataTypeMismatchException e) {
             e.printStackTrace();
         }
+        progressBar.setProgress(1);
+        Platform.runLater(stage::close);
     }
 
     private Path getResultAddress() {
@@ -185,6 +217,7 @@ public class MainController implements Initializable {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void deleteDirectory(Path path) throws IOException {
         Files.walk(path)
                 .sorted(Comparator.reverseOrder())
@@ -195,7 +228,6 @@ public class MainController implements Initializable {
     private boolean isEligible() {
         List<File> list = new ArrayList<>();
         list.add(new File(assignmentsField.getText()));
-//        list.add(new File(resultsField.getText()));
         list.add(new File(testsField.getText()));
         AtomicBoolean eligibility = new AtomicBoolean(true);
         list.forEach(x -> {
