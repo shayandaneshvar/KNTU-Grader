@@ -1,6 +1,7 @@
 package ir.ac.kntu;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -31,7 +32,6 @@ public class TestingDelete {
             delete(Paths.get(f.getAbsolutePath() /*+ "/testing"*/));
         }
     }
-
 
     @Test
     public void testCopyDirectories() throws IOException, URISyntaxException {

@@ -1,6 +1,7 @@
 package ir.ac.kntu;
 
 import org.apache.maven.shared.invoker.*;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.DataInputStream;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+@Disabled
 public class TestingMavenInvoker {
     @Test
     public void testingInvoker() throws IOException, MavenInvocationException {
