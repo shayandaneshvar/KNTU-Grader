@@ -40,11 +40,12 @@ public final class TestResult {
                     String[] parts = result.split(",");
                     String firstPart = parts[0].substring(parts[0].indexOf("Tests run: ") + 11);
                     String secondPart = parts[1].substring(parts[0].indexOf("Failures: ") + 12);
-                    testsRun += Integer.parseInt(firstPart);
-                    testsFailed += Integer.parseInt(secondPart);
+                    testsRun = Integer.parseInt(firstPart);
+                    testsFailed = Integer.parseInt(secondPart);
                     testsPassed = testsRun - testsFailed;
                     mark = (testsPassed / (float) testsRun) * maxScore;
-                } catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException ex) {
+                } catch (ArrayIndexOutOfBoundsException |
+                        StringIndexOutOfBoundsException ex) {
                     System.out.println(ex.getMessage());
                     testsRun = 0;
                     testsFailed = 0;
