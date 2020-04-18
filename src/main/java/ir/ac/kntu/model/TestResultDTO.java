@@ -1,38 +1,30 @@
 package ir.ac.kntu.model;
 
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvBindByPosition;
 
 import java.io.Serializable;
 
 public final class TestResultDTO implements Serializable {
-    @CsvBindByName(column = "full name")
-    @CsvBindByPosition(position = 0)
+    @CsvBindByName(column = "full name", required = true)
     private String id;
 
-    @CsvBindByName(column = "score")
-    @CsvBindByPosition(position = 1)
+    @CsvBindByName(column = "score", required = true)
     private Float mark;
 
-    @CsvBindByName(column = "tests run")
-    @CsvBindByPosition(position = 2)
+    @CsvBindByName(column = "tests run", required = true)
     private Integer testsRun;
 
-    @CsvBindByName(column = "tests passed")
-    @CsvBindByPosition(position = 3)
+    @CsvBindByName(column = "tests passed", required = true)
     private Integer testsPassed;
 
     @CsvBindByName(column = "tests failed")
-    @CsvBindByPosition(position = 4)
     private Integer testsFailed;
 
 
     @CsvBindByName(column = "test errors")
-    @CsvBindByPosition(position = 5)
     private Integer testErrors;
 
     @CsvBindByName(column = "tests skipped")
-    @CsvBindByPosition(position = 6)
     private Integer testsSkipped;
 
 
