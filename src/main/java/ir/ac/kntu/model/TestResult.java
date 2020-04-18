@@ -9,6 +9,8 @@ public final class TestResult {
     private Integer testsPassed = 0;
     private Integer testsFailed = 0;
     private Integer testsRun = 0;
+    private Integer testsSkipped = 0;
+    private Integer testErrors = 0;
     private boolean extracted;
     private static final Pattern pattern;
     private float mark;
@@ -39,18 +41,27 @@ public final class TestResult {
                 try {
                     String[] parts = result.split(",");
                     String firstPart = parts[0].substring(parts[0].indexOf("Tests run: ") + 11);
-                    String secondPart = parts[1].substring(parts[0].indexOf("Failures: ") + 12);
+                    String secondPart = parts[1].substring(parts[1].indexOf(
+                            "Failures: ") + 10);
+                    String thirdPart = parts[2].substring(parts[2].indexOf(
+                            "Errors: ") + 8);
+                    String fourthPart = parts[3].substring(parts[3].indexOf(
+                            "Skipped: ") + 9);
                     testsRun = Integer.parseInt(firstPart);
                     testsFailed = Integer.parseInt(secondPart);
-                    testsPassed = testsRun - testsFailed;
+                    testErrors = Integer.parseInt(thirdPart);
+                    testsSkipped = Integer.parseInt(fourthPart);
+                    testsPassed = testsRun - testsFailed - testErrors - testsSkipped;
                     mark = (testsPassed / (float) testsRun) * maxScore;
                 } catch (ArrayIndexOutOfBoundsException |
                         StringIndexOutOfBoundsException ex) {
-                    System.out.println(ex.getMessage());
+                    System.err.println(ex.getMessage());
                     testsRun = 0;
                     testsFailed = 0;
                     mark = 0;
                     testsPassed = 0;
+                    testsSkipped = 0;
+                    testErrors = 0;
                 }
             }
         }
@@ -80,6 +91,16 @@ public final class TestResult {
         return "TestResult(id=" + this.getId() + ", testsPassed=" +
                 this.getTestsPassed() + ", testsFailed=" + this.getTestsFailed()
                 + ", testsRun=" + this.getTestsRun() + ", extracted=" +
-                this.extracted + ", fullResult=" + this.getFullResult() + ")";
+                this.extracted + ", testErrors=" + this.testErrors + ", " +
+                "testsSkipped=" + this.testsSkipped + ", " +
+                "fullResult=" + this.getFullResult() + ")";
+    }
+
+    public Integer getTestsSkipped() {
+        return testsSkipped;
+    }
+
+    public Integer getTestErrors() {
+        return testErrors;
     }
 }

@@ -25,7 +25,9 @@ public class TestResult2TestResultDTO implements Converter<TestResult, TestResul
                         .setMark(x.getMark())
                         .setTestsRun(x.getTestsRun())
                         .setTestsFailed(x.getTestsFailed())
-                        .setTestsPassed(x.getTestsPassed()));
+                        .setTestsPassed(x.getTestsPassed())
+                        .setTestErrors(x.getTestErrors())
+                        .setTestsSkipped(x.getTestsSkipped()));
         return dto;
     }
 }
